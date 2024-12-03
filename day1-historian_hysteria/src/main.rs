@@ -16,7 +16,7 @@ fn read_input(path: &str) -> String {
     std::fs::read_to_string(path).expect("Unable to read input at provided path.")
 }
 
-fn parse_input(input: String) -> (U32Array, U32Array) {
+fn parse_input(input: &str) -> (U32Array, U32Array) {
     let mut arr1 = init_u32_array();
     let mut arr2 = init_u32_array();
 
@@ -88,7 +88,7 @@ mod part1 {
 
     pub fn execute() {
         let input_str = read_input(INPUT_PATH);
-        let lists = parse_input(input_str);
+        let lists = parse_input(&input_str);
         let pairs = pair_nums(lists);
         let total_difference = calculate_total_diff(pairs);
 
@@ -101,7 +101,7 @@ mod part2 {
 
     pub fn execute() {
         let input_str = read_input(INPUT_PATH);
-        let lists = parse_input(input_str);
+        let lists = parse_input(&input_str);
         let counts = get_occurrence_counts(lists);
         let score = calculate_similarity_score(counts);
 
