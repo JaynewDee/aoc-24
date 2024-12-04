@@ -9,7 +9,6 @@ fn read_input(path: &str) -> String {
     input
 }
 
-#[derive(Debug)]
 struct Instruction(u16, u16);
 
 fn parse_input(input: &mut String) -> Vec<Instruction> {
@@ -23,8 +22,8 @@ fn parse_input(input: &mut String) -> Vec<Instruction> {
             .filter(|v| *v != "")
             .map(|v| v.to_string())
             .collect::<Vec<String>>();
+
         let mut window_iter = window.iter();
-        // println!("{:#?}", &window);
         let mut pred1 = String::new();
         let mut pred2 = String::new();
         let mut passed_comma = false;

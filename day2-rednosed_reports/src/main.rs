@@ -53,18 +53,21 @@ impl Report {
     }
 
     pub fn use_dampener(&mut self, mut current: usize) {
+        // recursive terminating case
         if current == self.nums.len() {
             return;
         }
 
-        let mut dup = self.clone();
-        dup.nums.remove(current);
-        let is_safe = dup.check_safety();
+        let mut dup = self.clone(); // leave original report untouched by creating a fresh copy at each iteration
+        dup.nums.remove(current); // remove num at index
+        let is_safe = dup.check_safety(); // check safety with num removed
         if is_safe {
+            // if safe without num at current position, set safe at original instance and exit recursion
             self.is_safe = true;
             return;
         }
         current += 1;
+        // continue testing with removal at advanced position
         self.use_dampener(current);
     }
 }
@@ -86,11 +89,8 @@ fn check_all(reports: &mut Vec<Report>) -> u16 {
     let mut num_safe: u16 = 0;
 
     for report in reports.iter_mut() {
-        report.check_safety();
-    }
-
-    for report in reports.iter() {
-        if report.is_safe {
+        let is_safe = report.check_safety();
+        if is_safe {
             num_safe += 1;
         }
     }
