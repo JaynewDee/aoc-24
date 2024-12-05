@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 fn main() {
-    // part1::execute();
+    part1::execute();
     part2::execute();
 }
 
@@ -16,166 +16,74 @@ struct LetterMatrix {
 
 impl LetterMatrix {
     pub fn find_by_coords(&self, coords: (usize, usize)) -> Option<char> {
-        if let Some(row) = self.matrix.get(coords.1) {
-            if let Some(item) = row.get(coords.0) {
-                return Some(*item);
-            } else {
-                return None;
+        self.matrix
+            .get(coords.1)
+            .and_then(|row| row.get(coords.0).cloned())
+    }
+
+    pub fn check_direction(&self, start: (usize, usize), dir: (isize, isize)) -> bool {
+        let mut coords = start;
+
+        for target_char in &['M', 'A', 'S'] {
+            let new_coords = (
+                coords.0.wrapping_add(dir.0 as usize),
+                coords.1.wrapping_add(dir.1 as usize),
+            );
+
+            match self.find_by_coords(new_coords) {
+                Some(c) if c == *target_char => coords = new_coords,
+                _ => return false,
             }
-        } else {
-            return None;
         }
+
+        true
     }
 
     pub fn check_horizontal_right(&self, start: (usize, usize)) -> bool {
-        if let Some(m) = self.find_by_coords((start.0 + 1, start.1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0 + 2, start.1)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0 + 3, start.1)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                };
-            }
-        }
-        return false;
+        self.check_direction(start, (1, 0))
     }
 
     pub fn check_horizontal_left(&self, start: (usize, usize)) -> bool {
         if start.0 < 3 {
             return false;
         }
-        if let Some(m) = self.find_by_coords((start.0 - 1, start.1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0 - 2, start.1)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0 - 3, start.1)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (-1, 0))
     }
 
     pub fn check_vertical_up(&self, start: (usize, usize)) -> bool {
         if start.1 < 3 {
             return false;
         }
-        if let Some(m) = self.find_by_coords((start.0, start.1 - 1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0, start.1 - 2)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0, start.1 - 3)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (0, -1))
     }
 
     pub fn check_vertical_down(&self, start: (usize, usize)) -> bool {
-        if let Some(m) = self.find_by_coords((start.0, start.1 + 1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0, start.1 + 2)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0, start.1 + 3)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (0, 1))
     }
 
     pub fn check_diagonal_up_left(&self, start: (usize, usize)) -> bool {
         if start.0 < 3 || start.1 < 3 {
             return false;
         }
-        if let Some(m) = self.find_by_coords((start.0 - 1, start.1 - 1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0 - 2, start.1 - 2)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0 - 3, start.1 - 3)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (-1, -1))
     }
 
     pub fn check_diagonal_up_right(&self, start: (usize, usize)) -> bool {
         if start.1 < 3 {
             return false;
         }
-        if let Some(m) = self.find_by_coords((start.0 + 1, start.1 - 1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0 + 2, start.1 - 2)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0 + 3, start.1 - 3)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (1, -1))
     }
 
     pub fn check_diagonal_down_left(&self, start: (usize, usize)) -> bool {
         if start.0 < 3 {
             return false;
         }
-        if let Some(m) = self.find_by_coords((start.0 - 1, start.1 + 1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0 - 2, start.1 + 2)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0 - 3, start.1 + 3)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (-1, 1))
     }
 
     pub fn check_diagonal_down_right(&self, start: (usize, usize)) -> bool {
-        if let Some(m) = self.find_by_coords((start.0 + 1, start.1 + 1)) {
-            if m == 'M' {
-                if let Some(a) = self.find_by_coords((start.0 + 2, start.1 + 2)) {
-                    if a == 'A' {
-                        if let Some(s) = self.find_by_coords((start.0 + 3, start.1 + 3)) {
-                            if s == 'S' {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        self.check_direction(start, (1, 1))
     }
 
     pub fn find_all_xmas(&self) -> u32 {
@@ -187,31 +95,24 @@ impl LetterMatrix {
                     if self.check_horizontal_right((x, y)) {
                         total += 1;
                     }
-
                     if self.check_horizontal_left((x, y)) {
                         total += 1;
                     }
-
                     if self.check_vertical_up((x, y)) {
                         total += 1;
                     }
-
                     if self.check_vertical_down((x, y)) {
                         total += 1;
                     }
-
                     if self.check_diagonal_up_left((x, y)) {
                         total += 1;
                     }
-
                     if self.check_diagonal_up_right((x, y)) {
                         total += 1;
                     }
-
                     if self.check_diagonal_down_left((x, y)) {
                         total += 1;
                     }
-
                     if self.check_diagonal_down_right((x, y)) {
                         total += 1;
                     }
@@ -227,7 +128,6 @@ impl LetterMatrix {
         if start.0 < 1 || start.1 < 1 {
             return false;
         }
-
         if let Some(l) = self.find_by_coords((start.0 - 1, start.1 - 1)) {
             if l == 'M' {
                 // check bottom right for 'S'
@@ -247,7 +147,6 @@ impl LetterMatrix {
                 return false;
             }
         };
-
         return false;
     }
 
@@ -256,7 +155,6 @@ impl LetterMatrix {
         if start.0 < 1 || start.1 < 1 {
             return false;
         }
-
         if let Some(l) = self.find_by_coords((start.0 + 1, start.1 - 1)) {
             if l == 'M' {
                 // check bottom left for 'S'
@@ -276,7 +174,6 @@ impl LetterMatrix {
                 return false;
             }
         };
-
         return false;
     }
 
