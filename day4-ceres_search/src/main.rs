@@ -14,24 +14,38 @@ struct LetterMatrix {
     matrix: Vec<Vec<char>>,
 }
 
+fn parse_input_matrix(input: &String) -> LetterMatrix {
+    let mut matrix: Vec<Vec<char>> = Vec::new();
+
+    for line in input.lines() {
+        let mut row: Vec<char> = Vec::new();
+        for c in line.chars() {
+            row.push(c);
+        }
+        matrix.push(row);
+    }
+
+    LetterMatrix { matrix }
+}
+
 impl LetterMatrix {
-    pub fn find_by_coords(&self, coords: (usize, usize)) -> Option<char> {
+    fn find_by_coords(&self, coords: (usize, usize)) -> Option<char> {
         self.matrix
             .get(coords.1)
             .and_then(|row| row.get(coords.0).cloned())
     }
 
-    pub fn check_direction(&self, start: (usize, usize), dir: (isize, isize)) -> bool {
+    fn check_direction(&self, start: (usize, usize), dir: (isize, isize)) -> bool {
         let mut coords = start;
 
-        for target_char in &['M', 'A', 'S'] {
+        for &target_char in &['M', 'A', 'S'] {
             let new_coords = (
                 coords.0.wrapping_add(dir.0 as usize),
                 coords.1.wrapping_add(dir.1 as usize),
             );
 
             match self.find_by_coords(new_coords) {
-                Some(c) if c == *target_char => coords = new_coords,
+                Some(c) if c == target_char => coords = new_coords,
                 _ => return false,
             }
         }
@@ -39,54 +53,54 @@ impl LetterMatrix {
         true
     }
 
-    pub fn check_horizontal_right(&self, start: (usize, usize)) -> bool {
+    fn check_horizontal_right(&self, start: (usize, usize)) -> bool {
         self.check_direction(start, (1, 0))
     }
 
-    pub fn check_horizontal_left(&self, start: (usize, usize)) -> bool {
+    fn check_horizontal_left(&self, start: (usize, usize)) -> bool {
         if start.0 < 3 {
             return false;
         }
         self.check_direction(start, (-1, 0))
     }
 
-    pub fn check_vertical_up(&self, start: (usize, usize)) -> bool {
+    fn check_vertical_up(&self, start: (usize, usize)) -> bool {
         if start.1 < 3 {
             return false;
         }
         self.check_direction(start, (0, -1))
     }
 
-    pub fn check_vertical_down(&self, start: (usize, usize)) -> bool {
+    fn check_vertical_down(&self, start: (usize, usize)) -> bool {
         self.check_direction(start, (0, 1))
     }
 
-    pub fn check_diagonal_up_left(&self, start: (usize, usize)) -> bool {
+    fn check_diagonal_up_left(&self, start: (usize, usize)) -> bool {
         if start.0 < 3 || start.1 < 3 {
             return false;
         }
         self.check_direction(start, (-1, -1))
     }
 
-    pub fn check_diagonal_up_right(&self, start: (usize, usize)) -> bool {
+    fn check_diagonal_up_right(&self, start: (usize, usize)) -> bool {
         if start.1 < 3 {
             return false;
         }
         self.check_direction(start, (1, -1))
     }
 
-    pub fn check_diagonal_down_left(&self, start: (usize, usize)) -> bool {
+    fn check_diagonal_down_left(&self, start: (usize, usize)) -> bool {
         if start.0 < 3 {
             return false;
         }
         self.check_direction(start, (-1, 1))
     }
 
-    pub fn check_diagonal_down_right(&self, start: (usize, usize)) -> bool {
+    fn check_diagonal_down_right(&self, start: (usize, usize)) -> bool {
         self.check_direction(start, (1, 1))
     }
 
-    pub fn find_all_xmas(&self) -> u32 {
+    fn find_all_xmas(&self) -> u32 {
         let mut total = 0;
 
         for (y, row) in self.matrix.iter().enumerate() {
@@ -124,7 +138,7 @@ impl LetterMatrix {
     }
 
     // Top left to bottom right
-    pub fn check_mas_first_diagonal(&self, start: (usize, usize)) -> bool {
+    fn check_mas_first_diagonal(&self, start: (usize, usize)) -> bool {
         if start.0 < 1 || start.1 < 1 {
             return false;
         }
@@ -151,7 +165,7 @@ impl LetterMatrix {
     }
 
     // Top right to bottom left
-    pub fn check_mas_second_diagonal(&self, start: (usize, usize)) -> bool {
+    fn check_mas_second_diagonal(&self, start: (usize, usize)) -> bool {
         if start.0 < 1 || start.1 < 1 {
             return false;
         }
@@ -177,7 +191,7 @@ impl LetterMatrix {
         return false;
     }
 
-    pub fn find_all_mas_x(&self) -> u32 {
+    fn find_all_mas_x(&self) -> u32 {
         let mut total = 0;
 
         for (y, row) in self.matrix.iter().enumerate() {
@@ -194,20 +208,6 @@ impl LetterMatrix {
 
         total
     }
-}
-
-fn parse_input_matrix(input: &String) -> LetterMatrix {
-    let mut matrix: Vec<Vec<char>> = Vec::new();
-
-    for line in input.lines() {
-        let mut row: Vec<char> = Vec::new();
-        for c in line.chars() {
-            row.push(c);
-        }
-        matrix.push(row);
-    }
-
-    LetterMatrix { matrix }
 }
 
 mod part1 {
