@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 
 fn main() {
-    part1::execute();
+    // part1::execute();
+    part2::execute();
 }
 
 fn read_input() -> String {
@@ -220,6 +221,82 @@ impl LetterMatrix {
 
         total
     }
+
+    // Top left to bottom right
+    pub fn check_mas_first_diagonal(&self, start: (usize, usize)) -> bool {
+        if start.0 < 1 || start.1 < 1 {
+            return false;
+        }
+
+        if let Some(l) = self.find_by_coords((start.0 - 1, start.1 - 1)) {
+            if l == 'M' {
+                // check bottom right for 'S'
+                if let Some(l) = self.find_by_coords((start.0 + 1, start.1 + 1)) {
+                    if l == 'S' {
+                        return true;
+                    }
+                }
+            } else if l == 'S' {
+                // check bottom right for 'M'
+                if let Some(l) = self.find_by_coords((start.0 + 1, start.1 + 1)) {
+                    if l == 'M' {
+                        return true;
+                    }
+                }
+            } else {
+                return false;
+            }
+        };
+
+        return false;
+    }
+
+    // Top right to bottom left
+    pub fn check_mas_second_diagonal(&self, start: (usize, usize)) -> bool {
+        if start.0 < 1 || start.1 < 1 {
+            return false;
+        }
+
+        if let Some(l) = self.find_by_coords((start.0 + 1, start.1 - 1)) {
+            if l == 'M' {
+                // check bottom left for 'S'
+                if let Some(l) = self.find_by_coords((start.0 - 1, start.1 + 1)) {
+                    if l == 'S' {
+                        return true;
+                    }
+                }
+            } else if l == 'S' {
+                // check bottom left for 'M'
+                if let Some(l) = self.find_by_coords((start.0 - 1, start.1 + 1)) {
+                    if l == 'M' {
+                        return true;
+                    }
+                }
+            } else {
+                return false;
+            }
+        };
+
+        return false;
+    }
+
+    pub fn find_all_mas_x(&self) -> u32 {
+        let mut total = 0;
+
+        for (y, row) in self.matrix.iter().enumerate() {
+            for (x, c) in row.iter().enumerate() {
+                if *c == 'A' {
+                    if self.check_mas_first_diagonal((x, y))
+                        && self.check_mas_second_diagonal((x, y))
+                    {
+                        total += 1;
+                    }
+                }
+            }
+        }
+
+        total
+    }
 }
 
 fn parse_input_matrix(input: &String) -> LetterMatrix {
@@ -245,6 +322,18 @@ mod part1 {
         let total = letter_matrix.find_all_xmas();
 
         println!("TOTAL XMAS FOUND: {}", total);
+    }
+}
+
+mod part2 {
+    use super::*;
+
+    pub fn execute() {
+        let input = read_input();
+        let letter_matrix = parse_input_matrix(&input);
+        let total = letter_matrix.find_all_mas_x();
+
+        println!("TOTAL MAS-X FOUND: {}", total);
     }
 }
 
