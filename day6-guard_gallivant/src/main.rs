@@ -12,9 +12,7 @@ fn main() {
     map.traverse();
 
     let visited_count = map.count_visited();
-    println!("{}", visited_count);
-
-    // println!("{:#?}", map.locations);
+    println!("PART 1 VISITED COUNT: {}", visited_count);
 }
 
 fn read_input() -> String {
@@ -80,10 +78,10 @@ impl Map {
     fn traverse(&mut self) {
         use Direction::*;
         /* Loop
-           1) Attempt to move the guard in the direction it's facing
-           2) If successful/path clear, store 'X' as char at visited location
-           3) If blocked, turn right 90deg
-           4) If at and facing edge, break
+           1) If at and facing edge, break
+           2) Attempt to move the guard in the direction it's facing
+           3) If successful/path clear, store 'X' as char at visited location
+           4) If blocked, turn right 90deg
         */
         let (max_x, max_y) = (self.dimensions.0 - 1, self.dimensions.1 - 1);
         loop {
