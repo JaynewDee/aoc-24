@@ -89,10 +89,12 @@ mod part1 {
 }
 
 mod part2 {
+    use std::collections::{HashSet, VecDeque};
+
     use super::*;
 
     pub fn execute() {
         let input = read_input();
-        let (adjacency_list, updates) = parse_input(&input);
+        // let (adjacency_list, updates) = parse_input(&input);
     }
 }
